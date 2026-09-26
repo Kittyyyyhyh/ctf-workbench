@@ -15,7 +15,7 @@ CTF 比赛工作台。你在本仓库内工作，职责是辅助（或在人类�
 - **armory/**：按方向的沙箱镜像定义。当前已提供 base / web / pwn；其余方向镜像未构建时 `init` 会提示。容器是消耗品：可以任意 `pip install` / `apt install`，装坏了 `rm` 重建即可。
 - **intel/**：知识库（图书馆，不是课本）。`intel/INDEX.md` 是全库目录卡：需要背景资料、命令速查、历史 WP 或想找灵感时，先查目录再按需读文件。**查不查、信不信、用不用由你判断；本库是参考，不是约束。**
 - **examples/**：示例题模板，`ctf init <名> --type <方向> --from examples/<模板>` 一键起题。
-- **armory/scenarios/**：练手场景（应急取证 / AI 注入 / 渗透内网）。`ctf scenario list`
+- **armory/scenarios/**：练手场景（应急取证 / AI 注入 / 渗透内网 / 防御审计）。`ctf scenario list`
   查看，`ctf scenario up|down|exec|logs <场景名>` 操作，题面在场景目录 README。
 - **skills/**：`ctf-env`（沙箱操作细节与坑）、`postmortem`（赛后复盘入库流程）。
 

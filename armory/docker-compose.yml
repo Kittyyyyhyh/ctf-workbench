@@ -76,3 +76,10 @@ services:
         GH_PROXY: ${GH_PROXY:-}
         INSTALL_GARAK: ${INSTALL_GARAK:-0}
     profiles: ["ai"]
+
+  osint:
+    image: ctf-osint
+    build:
+      <<: *build-args
+      context: ./osint
+    profiles: ["osint"]

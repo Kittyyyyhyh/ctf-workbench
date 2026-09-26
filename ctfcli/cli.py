@@ -20,7 +20,7 @@ from pathlib import Path
 VERSION = "0.1.0"
 
 VALID_TYPES = ["web", "pwn", "crypto", "reverse", "forensics", "ir", "ai", "osint", "misc"]
-BUILDABLE_TYPES = ["base", "web", "pwn", "crypto", "reverse", "forensics", "ir", "ai"]
+BUILDABLE_TYPES = ["base", "web", "pwn", "crypto", "reverse", "forensics", "ir", "ai", "osint"]
 # doctor hard-requires the day-to-day set; the rest are listed as optional
 REQUIRED_IMAGES = {"base", "web", "pwn"}
 IMAGE_PREFIX = "ctf-"
@@ -429,6 +429,46 @@ def cmd_update(args) -> int:
     return 0
 
 
+# ---------------------------------------------------------------- ghcr images
+
+def _default_owner() -> str | None:
+    owner = os.environ.get("CTF_IMAGES_OWNER")
+    if owner:
+        return owner
+    try:
+        r = subprocess.run(["git", "remote", "get-url", "origin"],
+                           capture_output=True, text=True, timeout=10)
+        url = (r.stdout or "").strip()
+        m = re.search(r"github\.com[/:]([^/]+)/", url, re.I)
+        if m:
+            return m.group(1).lower()
+    except Exception:
+        pass
+    return None
+
+
+def cmd_install_images(args) -> int:
+    owner = args.owner or _default_owner()
+    if not owner:
+        die("cannot determine GHCR owner — pass --owner <name> or set CTF_IMAGES_OWNER")
+    registry = args.registry.rstrip("/")
+    types = args.types
+    failed = []
+    for t in types:
+        ref = f"{registry}/{owner}/ctf-{t}:latest"
+        info(f"pulling {ref} ...")
+        r = docker("pull", ref)
+        if r.returncode != 0:
+            failed.append(ref)
+            continue
+        docker("tag", ref, f"ctf-{t}:latest")
+        ok(f"ctf-{t}:latest  <-  {ref}")
+    if failed:
+        die("pull failed for: " + ", ".join(failed))
+    print("done — images are tagged locally as ctf-<type>; check 'ctf doctor'")
+    return 0
+
+
 # ---------------------------------------------------------------- scenarios
 
 def _scenario_compose(root: Path, name: str) -> Path:
@@ -538,6 +578,14 @@ def build_parser() -> argparse.ArgumentParser:
                     help="one or more of: " + ", ".join(BUILDABLE_TYPES))
     sp.add_argument("--no-cache", action="store_true", help="build without cache")
     sp.set_defaults(func=cmd_update)
+
+    sp = sub.add_parser("install-images",
+                        help="pull prebuilt images from GHCR instead of building locally")
+    sp.add_argument("types", nargs="*", choices=BUILDABLE_TYPES, metavar="TYPE",
+                    help="types to pull (default: all)")
+    sp.add_argument("--owner", help="GHCR owner (default: CTF_IMAGES_OWNER or git origin)")
+    sp.add_argument("--registry", default="ghcr.io", help="registry (default: ghcr.io)")
+    sp.set_defaults(func=cmd_install_images)
 
     sp = sub.add_parser("scenario", help="manage training scenarios (armory/scenarios/*)")
     ssp = sp.add_subparsers(dest="action", required=True, metavar="<action>")

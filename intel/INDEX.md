@@ -41,7 +41,8 @@
 
 ## 练手场景（配合 armory/scenarios/）
 
-ir-forensics（应急取证）、ai-injection（AI 注入，本地 LLM）、pentest-basic（两跳内网）。
+ir-forensics（应急取证）、ai-injection（AI 注入，本地 LLM）、pentest-basic（两跳内网）、
+defense-audit（防御审计与加固报告）。
 启动与题面：`python -m ctfcli scenario list` + 对应场景 README。
 
 ## 维护

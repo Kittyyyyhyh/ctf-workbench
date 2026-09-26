@@ -21,9 +21,13 @@
 # 1. 环境自检
 ./ctf doctor          # 等价：python -m ctfcli doctor
 
-# 2. 构建镜像（MVP 提供 base / web / pwn）
-./ctf update base && ./ctf update web && ./ctf update pwn
+# 2a. 拉取预构建镜像（推荐，免本地构建；公开仓库发布在 GHCR）
+./ctf install-images                # 全部方向，约 13GB
+# ./ctf install-images web pwn     # 只拉常用方向
 
+# 2b. 或本地构建
+./ctf update base web pwn
+# 全部方向：./ctf update crypto reverse forensics ir ai osint
 # 国内网络可先设置镜像加速（也可写入 shell 配置）：
 #   export APT_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/ubuntu
 #   export PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
@@ -35,6 +39,9 @@
 # 4. 让 CC 读仓库根目录 CLAUDE.md 开工；或手动：
 ./ctf exec --detach ssti bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1"
 ./ctf exec ssti curl -s http://127.0.0.1:5000/
+
+# 5. 练手场景（应急取证 / AI 注入 / 渗透内网 / 防御审计）
+./ctf scenario list && ./ctf scenario up defense-audit
 ```
 
 ## 目录结构

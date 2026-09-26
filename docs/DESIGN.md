@@ -311,8 +311,10 @@ hint: "用伪协议绕过 include 的 include 截断"   # writeup 专用：一�
 
 ### v2（实战迭代后）
 
-- [ ] pentest 多机场景、defense 知识补全
-- [ ] hook 自动笔记、GHCR 镜像发布、更多场景库
+- [x] GHCR 镜像发布（.github/workflows/publish.yml + `ctf install-images`）
+- [x] osint 镜像、defense-audit 防御审计场景
+- [ ] pentest 多机场景扩展、defense 知识补全
+- [ ] hook 自动笔记、更多场景库
 
 ---
 

@@ -1,0 +1,12 @@
+name: ctf-sc-defense-audit
+
+# 综合防御练习场景：一台"配置糟糕"的服务器，做安全审计并输出加固报告。
+# 每次场景启动（up）都会重新布置缺陷；down 会清空。
+
+services:
+  audit-scene:
+    image: ctf-ir
+    hostname: app-prod-02
+    volumes:
+      - ./:/opt/scenario:ro
+    command: ["bash", "-c", "bash /opt/scenario/plant.sh && exec tail -f /dev/null"]

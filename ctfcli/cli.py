@@ -20,7 +20,9 @@ from pathlib import Path
 VERSION = "0.1.0"
 
 VALID_TYPES = ["web", "pwn", "crypto", "reverse", "forensics", "ir", "ai", "osint", "misc"]
-BUILDABLE_TYPES = ["base", "web", "pwn"]  # MVP: images provided in armory/
+BUILDABLE_TYPES = ["base", "web", "pwn", "crypto", "reverse", "forensics", "ir", "ai"]
+# doctor hard-requires the day-to-day set; the rest are listed as optional
+REQUIRED_IMAGES = {"base", "web", "pwn"}
 IMAGE_PREFIX = "ctf-"
 CONTAINER_PREFIX = "ctf-"
 NETWORK = "ctf-net"
@@ -372,8 +374,12 @@ def cmd_doctor(args) -> int:
         for t in BUILDABLE_TYPES:
             img = IMAGE_PREFIX + t
             present = image_exists(img)
-            checks.append((f"image {img}", present,
-                           "present" if present else f"missing — ctf update {t}"))
+            if t in REQUIRED_IMAGES:
+                checks.append((f"image {img}", present,
+                               "present" if present else f"missing — ctf update {t}"))
+            else:
+                checks.append((f"image {img} (optional)", True,
+                               "present" if present else f"not built — 'ctf update {t}' when needed"))
         net_ok = docker("network", "inspect", NETWORK).returncode == 0
         net_detail = "present"
         if not net_ok:
@@ -410,7 +416,7 @@ def cmd_update(args) -> int:
     for t in targets:
         if t not in BUILDABLE_TYPES:
             die(f"cannot build '{t}' (MVP images: {', '.join(BUILDABLE_TYPES)})")
-    if "base" not in targets and any(t in ("web", "pwn") for t in targets):
+    if "base" not in targets and any(t != "base" for t in targets):
         targets = ["base", *targets]
     for t in targets:
         info(f"building image ctf-{t} ...")
@@ -421,6 +427,59 @@ def cmd_update(args) -> int:
             die(f"build failed: {t}")
         ok(f"ctf-{t} ready")
     return 0
+
+
+# ---------------------------------------------------------------- scenarios
+
+def _scenario_compose(root: Path, name: str) -> Path:
+    f = root / "armory" / "scenarios" / name / "docker-compose.yml"
+    if not f.is_file():
+        die(f"unknown scenario '{name}' (no {f}); list with: ctf scenario list")
+    return f
+
+
+def _scenario_cmd(root: Path, action: str, name: str, extra=()):
+    compose = _scenario_compose(root, name)
+    return ["docker", "compose", "-f", str(compose), "-p", f"ctf-sc-{name}",
+            action, *extra]
+
+
+def cmd_scenario(args) -> int:
+    root = find_root()
+    if args.action == "list":
+        d = root / "armory" / "scenarios"
+        found = False
+        if d.is_dir():
+            for p in sorted(d.iterdir()):
+                if (p / "docker-compose.yml").is_file():
+                    print(p.name)
+                    found = True
+        if not found:
+            info("no scenarios defined under armory/scenarios/")
+        return 0
+    name = args.scenario
+    if args.action == "up":
+        extra = ["-d"] + (["--build"] if args.build else [])
+        if subprocess.run(_scenario_cmd(root, "up", name, extra)).returncode != 0:
+            die(f"scenario '{name}' failed to start")
+        ok(f"scenario '{name}' is up — brief: armory/scenarios/{name}/README.md")
+        return 0
+    if args.action == "down":
+        subprocess.run(_scenario_cmd(root, "down", name, ["-v"]))
+        ok(f"scenario '{name}' down (volumes removed)")
+        return 0
+    if args.action == "ps":
+        return subprocess.run(_scenario_cmd(root, "ps", name)).returncode
+    if args.action == "logs":
+        extra = ["--follow"] if args.follow else []
+        if args.service:
+            extra.append(args.service)
+        return subprocess.run(_scenario_cmd(root, "logs", name, extra)).returncode
+    if args.action == "exec":
+        return subprocess.run(
+            _scenario_cmd(root, "exec", name, [args.service, *args.cmd])).returncode
+    die(f"unknown scenario action: {args.action}")
+    return 1
 
 
 # ---------------------------------------------------------------- argparse
@@ -479,6 +538,37 @@ def build_parser() -> argparse.ArgumentParser:
                     help="one or more of: " + ", ".join(BUILDABLE_TYPES))
     sp.add_argument("--no-cache", action="store_true", help="build without cache")
     sp.set_defaults(func=cmd_update)
+
+    sp = sub.add_parser("scenario", help="manage training scenarios (armory/scenarios/*)")
+    ssp = sp.add_subparsers(dest="action", required=True, metavar="<action>")
+
+    s = ssp.add_parser("list", help="list available scenarios")
+    s.set_defaults(func=cmd_scenario)
+
+    s = ssp.add_parser("up", help="start a scenario")
+    s.add_argument("scenario", metavar="NAME")
+    s.add_argument("--build", action="store_true", help="build images first")
+    s.set_defaults(func=cmd_scenario)
+
+    s = ssp.add_parser("down", help="stop a scenario and remove volumes")
+    s.add_argument("scenario", metavar="NAME")
+    s.set_defaults(func=cmd_scenario)
+
+    s = ssp.add_parser("ps", help="scenario container status")
+    s.add_argument("scenario", metavar="NAME")
+    s.set_defaults(func=cmd_scenario)
+
+    s = ssp.add_parser("logs", help="scenario logs")
+    s.add_argument("scenario", metavar="NAME")
+    s.add_argument("service", nargs="?", help="limit to one service")
+    s.add_argument("--follow", "-f", action="store_true")
+    s.set_defaults(func=cmd_scenario)
+
+    s = ssp.add_parser("exec", help="run a command inside a scenario service")
+    s.add_argument("scenario", metavar="NAME")
+    s.add_argument("service", metavar="SERVICE")
+    s.add_argument("cmd", nargs=argparse.REMAINDER, metavar="CMD...")
+    s.set_defaults(func=cmd_scenario)
 
     return p
 

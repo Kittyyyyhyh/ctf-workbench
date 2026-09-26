@@ -32,3 +32,47 @@ services:
       <<: *build-args
       context: ./pwn
     profiles: ["pwn"]
+
+  crypto:
+    image: ctf-crypto
+    build:
+      context: ./crypto
+      args:
+        APT_MIRROR: ${APT_MIRROR:-}
+        PIP_INDEX_URL: ${PIP_INDEX_URL:-}
+        GH_PROXY: ${GH_PROXY:-}
+        INSTALL_SAGE: ${INSTALL_SAGE:-0}
+    profiles: ["crypto"]
+
+  reverse:
+    image: ctf-reverse
+    build:
+      <<: *build-args
+      context: ./reverse
+    profiles: ["reverse"]
+
+  forensics:
+    image: ctf-forensics
+    build:
+      <<: *build-args
+      context: ./forensics
+    profiles: ["forensics"]
+
+  ir:
+    image: ctf-ir
+    build:
+      <<: *build-args
+      context: ./ir
+    profiles: ["ir"]
+
+  ai:
+    image: ctf-ai
+    build:
+      <<: *build-args
+      context: ./ai
+      args:
+        APT_MIRROR: ${APT_MIRROR:-}
+        PIP_INDEX_URL: ${PIP_INDEX_URL:-}
+        GH_PROXY: ${GH_PROXY:-}
+        INSTALL_GARAK: ${INSTALL_GARAK:-0}
+    profiles: ["ai"]

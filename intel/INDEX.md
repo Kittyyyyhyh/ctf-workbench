@@ -11,6 +11,7 @@
 | 文件 | 方向 | 标签 | 一句话 |
 |---|---|---|---|
 | [techniques/web/ssti-basics.md](techniques/web/ssti-basics.md) | web | ssti, jinja2, flask | 服务端模板注入：检测信号与 jinja2 利用面速查 |
+| [techniques/ai/prompt-injection-basics.md](techniques/ai/prompt-injection-basics.md) | ai | prompt-injection, llm, agent | AI 注入题的四类攻击面分类法与固定排查动作 |
 
 ## cheatsheets/（工具速查）
 
@@ -25,14 +26,23 @@
 每篇 WP 的 front-matter 带 `hint` 一句话提示：**找灵感先只扫 hint，确认需要再读全文**，
 避免被既有解法锚定。
 
-## playbooks/（仅限有行业 SOP 的机械流程）
+## playbooks/（仅限有行业 SOP 的机械流程，头注均声明"非必循"）
 
-v1 提供：应急响应检查单、取证时间线规范、报告模板。
-所有 playbook 头部标注"参考流程，非必循；与现场证据冲突时以现场为准"。
+| 文件 | 一句话 |
+|---|---|
+| [playbooks/ir-checklist.md](playbooks/ir-checklist.md) | 应急响应排查检查单：账号/持久化/进程网络/web/时间线/报告 |
+| [playbooks/templates/ir-report.md](playbooks/templates/ir-report.md) | 应急响应报告模板（按节填空） |
 
 ## defense/（综合防御）
 
-v1 提供：加固基线、检测规则（sigma/yara）、攻防对照表。
+| 文件 | 一句话 |
+|---|---|
+| [defense/attack-defense-map.md](defense/attack-defense-map.md) | 攻防对照表：从攻击手法反查检测规则与加固基线 |
+
+## 练手场景（配合 armory/scenarios/）
+
+ir-forensics（应急取证）、ai-injection（AI 注入，本地 LLM）、pentest-basic（两跳内网）。
+启动与题面：`python -m ctfcli scenario list` + 对应场景 README。
 
 ## 维护
 

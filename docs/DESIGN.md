@@ -91,10 +91,10 @@ armory/base  (~800MB)
                            unicorn frida android sdk-tools apktool jeb(本机注入,见3.4)
        forensics (~2.5GB)  volatility3 binwalk zsteg stegsolve tshark autopsy-cli
                            exiftool outguess steghide erofs/squashfs 工具
-       ir        (~1.5GB)  日志分析套件(goaccess/jq/lnav) chkrootkit rkhunter lynis
-                           windows 取证 cli (regripper/evtx 工具) 时间线整理工具
-       ai        (~3.5GB)  ollama(+1-2 个小模型按需) garak/pyrit 类 LLM 测试框架
-                           whisper/ocr、图像生成溯源小工具、http 本地 LLM 代理
+       ir        (~1.5GB)  日志分析套件(lnav/goaccess/jq) chkrootkit rkhunter lynis
+                           RegRipper3.0、evtx_dump、sigma-cli、windows 取证 cli
+       ai        (~1.2GB)  LLM 攻击工具链(openai/anthropic sdk)、tesseract OCR、
+                           prompt 注入 payload 集；ollama 运行时不进镜像（见 §9）
        osint     (~1GB)    sherlock maigret dork 工具、exif/图片定位辅助、爬虫工具链
 ```
 
@@ -119,6 +119,7 @@ ctf ps                          # 当前题目/容器状态一览
 ctf tool <方向> <工具名> [args] # 一次性调用：起临时容器跑单个工具后销毁
 ctf doctor                      # 自检：docker 可用性、镜像齐缺、版本、网络
 ctf update [方向]               # 重建指定镜像（base 缓存加速）
+ctf scenario list|up|down|ps|logs|exec   # 练手场景编排（armory/scenarios/*）
 ```
 
 设计要点：
@@ -327,4 +328,5 @@ hint: "用伪协议绕过 include 的 include 截断"   # writeup 专用：一�
 | 知识库纯 markdown | 数据库/Notion API | CC 原生可读可写可 grep；赛后飞轮就是 git commit，零依赖 |
 | playbooks 例外放流程 | 一律不放流程 | 应急响应/取证真有行业 SOP，不放才是缺陷；头注声明"非必循" |
 | CLI 零依赖 argparse | click + pipx 安装 | 验收标准要求全新 clone 零安装即可用；pipx 安装是额外一步且可能踩环境 |
+| ollama 进场景不进镜像 | 烘焙进 ai 镜像 | 模型本质是运行时拉取的大文件，烘焙无意义；scenarios/ai-injection 用独立 ollama 服务按需拉取 |
 | 商业工具挂载注入 | 塞进镜像 | 合规；IDA/Burp Pro 不能进公开仓库 |

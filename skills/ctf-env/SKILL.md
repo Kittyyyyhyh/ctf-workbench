@@ -43,6 +43,13 @@ description: 操作 ctf-workbench 沙箱（ctf CLI）的细节与常见坑。当
 - 中文文件名正常（容器 locale 为 UTF-8）。
 - 宿主机访问容器端口需 `init --publish HOST:CONTAINER`（映射到 127.0.0.1）。
 
+## 场景（scenarios）
+
+多容器练习场景（应急取证 / AI 注入 / 渗透内网）不走 `ctf init`，走：
+`ctf scenario list | up <名> [--build] | ps | logs <名> [-f] | exec <名> <服务> <命令> | down <名>`。
+场景题面在 `armory/scenarios/<名>/README.md`；场景容器不挂 workspace，
+文件进出用 `scenario exec ... cat` 或 docker cp。
+
 ## 缺工具
 
 容器内直接 `pip install` / `apt-get update && apt-get install -y`，装坏了

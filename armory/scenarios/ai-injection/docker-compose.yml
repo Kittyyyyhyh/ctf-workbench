@@ -1,0 +1,28 @@
+name: ctf-sc-ai-injection
+
+# AI 注入练习场景：本地 ollama 小模型 + 一个带工具调用和文档摄入的 agent。
+# 首次 up 时 agent 会自动向 ollama 拉取模型（约 400MB），用
+#   ctf scenario logs ai-injection agent --follow
+# 观察进度。攻击面：http://127.0.0.1:8000（宿主机）/ http://agent:8000（c tf-net）。
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama-data:/root/.ollama
+
+  agent:
+    build: ./agent
+    hostname: agent
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      MODEL: "qwen2.5:0.5b"
+      FLAG: "flag{ai_injection_leak_success}"
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      - ollama
+    command: ["bash", "-c", "echo 'flag{ai_tool_hijack_rce}' > /flag2.txt && exec python3 /app/bootstrap.py"]
+
+volumes:
+  ollama-data:

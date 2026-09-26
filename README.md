@@ -53,9 +53,10 @@ ctf-workbench/
 
 ## 路线图
 
-- **MVP（当前）**：仓库骨架 + base/web/pwn 镜像 + ctf CLI + intel 索引骨架 + 两道示例题
-- **v1**：crypto/reverse/forensics/ir/ai 镜像、应急响应检查单、AI 注入靶场、渗透多机场景
-- **v2**：赛后飞轮打磨、GHCR 镜像发布、更多场景库
+- **MVP ✅**：仓库骨架 + ctf CLI + base/web/pwn 镜像 + intel 索引骨架 + 两道示例题
+- **v1 ✅**：crypto/reverse/forensics/ir/ai 镜像、应急响应检查单与报告模板、
+  AI 注入靶场（本地 ollama）、渗透两跳内网场景、`ctf scenario` 场景管理
+- **v2**：赛后飞轮实战打磨、GHCR 镜像发布、更多场景库、攻防对照表扩充
 
 详见 [docs/DESIGN.md](docs/DESIGN.md) §8。
 

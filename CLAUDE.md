@@ -6,7 +6,7 @@ CTF 比赛工作台。你在本仓库内工作，职责是辅助（或在人类�
 
 - **沙箱 CLI**：`python -m ctfcli`（下文简写 `ctf`；Git Bash 下也可用 `./ctf`）。管理按方向的 Docker 沙箱：
   - `ctf init <题目名> --type web|pwn [--from examples/<模板>]` 建题并启动沙箱容器
-  - `ctf exec <题目名> <命令...>` 在容器内执行命令 —— 你的主通道：宿主机写的脚本直接在容器里跑
+  - `ctf exec <题目名> <命令...>` 在容器内执行命令 —— 你的主通道：宿主机写的脚本直接在容器里跑；常驻服务用 `--detach` 起后台
   - `ctf shell <题目名>` 交互 shell（人类用）
   - `ctf target <题目名> host:port` 登记远程靶机地址
   - `ctf ps` / `ctf stop <题目名>` / `ctf rm <题目名>` 查看与收尾（workspace 保留）

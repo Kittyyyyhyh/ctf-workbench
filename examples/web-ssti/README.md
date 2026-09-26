@@ -11,7 +11,7 @@ Greeting Card Service 1.0 —— 给朋友写张贺卡吧。
 
 ```bash
 python -m ctfcli init ssti --type web --from examples/web-ssti
-python -m ctfcli exec ssti bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1 &"
+python -m ctfcli exec --detach ssti bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1"
 python -m ctfcli exec ssti curl -s 'http://127.0.0.1:5000/?name=guest'
 ```
 

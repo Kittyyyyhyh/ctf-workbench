@@ -30,12 +30,19 @@ stdout/stderr 实时流式返回。
 
 ```bash
 ./ctf exec ssti python3 /ctf/exploit/exploit.py
-./ctf exec ssti bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1 &"   # 后台起服务
+./ctf exec --detach ssti bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1"  # 后台起服务
 ./ctf exec ssti cat /tmp/svc.log
 ./ctf exec pwn1 make -C /ctf/attachments
 ```
 
-注意：`ctf exec` 无 TTY，交互式程序（io.interactive()、gdb）请走 `ctf shell`。
+注意：
+
+- `ctf exec` 无 TTY，交互式程序（io.interactive()、gdb）请走 `ctf shell`。
+- **常驻服务必须用 `--detach`**：普通 exec 退出后其子进程会被一并回收，
+  `bash -c "... &"` 在这个通道下不可靠。
+- Git Bash 会把 `/ctf/...`、`/tmp/...` 这类参数改写成 Windows 路径 —— CLI 会自动
+  还原（MSYS 修复），无需特殊处理；`./ctf` 包装脚本还额外设置了
+  `MSYS_NO_PATHCONV=1` 双保险。
 
 ### ctf shell `<名>`
 
@@ -73,8 +80,8 @@ export GH_PROXY=https://ghproxy.net/          # 注意保留结尾斜杠
 ## 典型闭环（CC 的视角）
 
 ```bash
-./ctf init chal --type web --from examples/web-ssti   # 1. 起题
-./ctf exec chal bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1 &"  # 2. 起服务
+./ctf init chal --type web --from examples/web-ssti                                  # 1. 起题
+./ctf exec --detach chal bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1"  # 2. 起服务
 # 3. 在 workspace/chal/exploit/ 写脚本（宿主机侧，任意编辑器）
 ./ctf exec chal python3 /ctf/exploit/exploit.py       # 4. 执行、看输出、迭代
 ./ctf rm chal                                          # 5. 收尾（workspace 留档）

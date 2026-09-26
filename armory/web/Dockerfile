@@ -18,11 +18,13 @@ RUN pip install --no-cache-dir \
         dirsearch sqlmap arjun wafw00f
 
 # Go-based fuzzers/scanners from GitHub releases
+# (gobuster uses Go-OS-Arch naming: amd64 -> x86_64)
 RUN set -eux; \
     arch="$(dpkg --print-architecture)"; \
+    gobarch="$(echo "$arch" | sed 's/^amd64$/x86_64/')"; \
     curl -fsSL "${GH_PROXY}https://github.com/ffuf/ffuf/releases/download/v2.1.0/ffuf_2.1.0_linux_${arch}.tar.gz" -o /tmp/ffuf.tgz; \
     tar -xzf /tmp/ffuf.tgz -C /usr/local/bin ffuf; \
-    curl -fsSL "${GH_PROXY}https://github.com/OJ/gobuster/releases/download/v3.6.0/gobuster_3.6.0_linux_${arch}.tar.gz" -o /tmp/gobuster.tgz; \
+    curl -fsSL "${GH_PROXY}https://github.com/OJ/gobuster/releases/download/v3.6.0/gobuster_Linux_${gobarch}.tar.gz" -o /tmp/gobuster.tgz; \
     tar -xzf /tmp/gobuster.tgz -C /usr/local/bin gobuster; \
     curl -fsSL "${GH_PROXY}https://github.com/projectdiscovery/nuclei/releases/download/v3.3.9/nuclei_3.3.9_linux_${arch}.zip" -o /tmp/nuclei.zip; \
     unzip -o /tmp/nuclei.zip -d /usr/local/bin nuclei; \

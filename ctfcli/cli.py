@@ -96,6 +96,48 @@ def container_of(meta: dict, name: str) -> str:
     return meta.get("container") or (CONTAINER_PREFIX + name)
 
 
+# ---------------------------------------------------------------- msys path repair
+
+_MSYS_INFO = None
+
+
+def _msys_info():
+    """Under Git Bash (MSYSTEM set), POSIX-looking args get rewritten to Windows
+    paths before python.exe sees them (e.g. /ctf/x -> D:/Git/ctf/x,
+    /tmp/x -> C:/Users/<u>/AppData/Local/Temp/x). Return (root, tmp) Windows
+    prefixes so we can reverse the damage, or None if not applicable."""
+    global _MSYS_INFO
+    if _MSYS_INFO is not None:
+        return _MSYS_INFO
+    if not os.environ.get("MSYSTEM"):
+        _MSYS_INFO = (None, None)
+        return _MSYS_INFO
+    root = tmp = None
+    try:
+        root = subprocess.run(["cygpath", "-m", "/"], capture_output=True,
+                              text=True, timeout=5).stdout.strip().rstrip("/")
+        tmp = subprocess.run(["cygpath", "-m", "/tmp"], capture_output=True,
+                             text=True, timeout=5).stdout.strip().rstrip("/")
+    except Exception:
+        root = tmp = None
+    _MSYS_INFO = (root or None, tmp or None)
+    return _MSYS_INFO
+
+
+def _unmangle(word: str) -> str:
+    """Best-effort repair of one MSYS-mangled container path. Container-side
+    args are always POSIX, so any drive-letter form is conversion damage."""
+    root, tmp = _msys_info()
+    low = word.lower()
+    if root and low.startswith(root.lower() + "/"):
+        return word[len(root):]
+    if tmp and low.startswith(tmp.lower() + "/"):
+        return "/tmp" + word[len(tmp):]
+    if re.match(r"^[A-Za-z]:[/\\]", word):
+        return "/" + word[0].lower() + word[2:].replace("\\", "/")
+    return word
+
+
 # ---------------------------------------------------------------- docker helpers
 
 def docker(*args: str, capture: bool = True) -> subprocess.CompletedProcess:
@@ -216,8 +258,18 @@ def cmd_exec(args) -> int:
     status = container_status(ctn)
     if status != "running":
         die(f"container {ctn} is '{status}' (not running); check 'ctf ps' or re-init")
-    flags = ["-i"] + (["-t"] if sys.stdin.isatty() else [])
-    cmd = ["docker", "exec", "-w", WORKDIR, *flags, ctn, *args.cmd]
+    cmd_args = [_unmangle(w) for w in args.cmd]
+    if args.detach:
+        # detached exec: survives the session, no stdio — the right way to
+        # launch background services from a non-interactive channel
+        r = docker("exec", "-d", "-w", WORKDIR, ctn, *cmd_args)
+        if r.returncode != 0:
+            die((r.stderr or r.stdout or "docker exec -d failed").strip())
+        return 0
+    # never -t: exec is the non-interactive channel (CC / scripts);
+    # interactive use belongs to `ctf shell`. Some pty bridges report a TTY to
+    # python while docker.exe sees a pipe, which makes -t fail hard.
+    cmd = ["docker", "exec", "-w", WORKDIR, "-i", ctn, *cmd_args]
     try:
         return subprocess.run(cmd).returncode
     except KeyboardInterrupt:
@@ -323,8 +375,13 @@ def cmd_doctor(args) -> int:
             checks.append((f"image {img}", present,
                            "present" if present else f"missing — ctf update {t}"))
         net_ok = docker("network", "inspect", NETWORK).returncode == 0
-        checks.append((f"network {NETWORK}", net_ok,
-                       "present" if net_ok else "auto-created on first 'ctf init'"))
+        net_detail = "present"
+        if not net_ok:
+            if docker("network", "create", NETWORK).returncode == 0:
+                net_ok, net_detail = True, "created"
+            else:
+                net_detail = "cannot create — check docker daemon permissions"
+        checks.append((f"network {NETWORK}", net_ok, net_detail))
     usage = shutil.disk_usage(root.anchor)
     free_gb = usage.free / 2**30
     checks.append((f"disk free on {root.anchor}", free_gb > 10, f"{free_gb:.1f} GB"))
@@ -389,6 +446,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     sp = sub.add_parser("exec", help="run a command inside the challenge container (main channel)")
     sp.add_argument("name", help="challenge name")
+    sp.add_argument("--detach", "-d", action="store_true",
+                    help="run detached in the container (background services; survives the session)")
     sp.add_argument("cmd", nargs=argparse.REMAINDER, metavar="CMD...",
                     help="command + args, passed verbatim to the container (no shell)")
     sp.set_defaults(func=cmd_exec)

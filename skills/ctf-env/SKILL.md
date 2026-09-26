@@ -20,8 +20,11 @@ description: 操作 ctf-workbench 沙箱（ctf CLI）的细节与常见坑。当
 - argv **直传容器，不经过 shell**：需要管道、通配符、变量展开、后台时，套一层
   `ctf exec <名> bash -c "..."`。
 - 退出码透传，可用于判断成败。
-- 起常驻服务：`ctf exec <名> bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1 &"`；
+- **起常驻服务必须用 `--detach`**（普通 exec 退出后子进程会被回收）：
+  `ctf exec --detach <名> bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1"`；
   日志用 `ctf exec <名> cat /tmp/svc.log` 查看。
+- Git Bash 会把 `/ctf/...`、`/tmp/...` 参数改写成 Windows 路径，CLI 已自动还原，
+  无需关心；但**不要**自己给容器内路径加引号转义。
 - 无 TTY：脚本里用 `process()`/`remote()`，不要以 `io.interactive()` 结尾；
   交互调试让人类走 `ctf shell`。
 

@@ -33,7 +33,7 @@
 ./ctf init ssti --type web --from examples/web-ssti
 
 # 4. 让 CC 读仓库根目录 CLAUDE.md 开工；或手动：
-./ctf exec ssti bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1 &"
+./ctf exec --detach ssti bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1"
 ./ctf exec ssti curl -s http://127.0.0.1:5000/
 ```
 

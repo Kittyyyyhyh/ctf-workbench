@@ -4,4 +4,6 @@
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PY="${PYTHON:-python}"
 command -v "$PY" >/dev/null 2>&1 || PY=python3
+# container-side args are POSIX paths; stop MSYS from rewriting them
+export MSYS_NO_PATHCONV=1
 exec "$PY" "$DIR/ctfcli/cli.py" "$@"

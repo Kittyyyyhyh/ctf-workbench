@@ -1,0 +1,34 @@
+name: ctf-armory
+
+# Build args are read from the environment, so regional mirrors can be set
+# without editing this file:
+#   export APT_MIRROR=https://mirrors.tuna.tsinghua.edu.cn/ubuntu
+#   export PIP_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+#   export GH_PROXY=https://ghproxy.net/
+x-build-args: &build-args
+  args:
+    APT_MIRROR: ${APT_MIRROR:-}
+    PIP_INDEX_URL: ${PIP_INDEX_URL:-}
+    GH_PROXY: ${GH_PROXY:-}
+
+services:
+  base:
+    image: ctf-base
+    build:
+      <<: *build-args
+      context: ./base
+    profiles: ["base"]
+
+  web:
+    image: ctf-web
+    build:
+      <<: *build-args
+      context: ./web
+    profiles: ["web"]
+
+  pwn:
+    image: ctf-pwn
+    build:
+      <<: *build-args
+      context: ./pwn
+    profiles: ["pwn"]

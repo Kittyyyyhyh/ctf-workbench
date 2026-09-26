@@ -1,0 +1,16 @@
+# 统一 LF：防止 Windows 检出 CRLF 弄坏脚本与 Dockerfile
+* text=auto eol=lf
+
+# 二进制附件
+*.png binary
+*.jpg binary
+*.gif binary
+*.zip binary
+*.7z binary
+*.gz binary
+*.pcap binary
+*.pcapng binary
+*.elf binary
+*.exe binary
+*.dll binary
+*.bin binary

@@ -1,0 +1,14 @@
+# 每道题的工作目录与运行时状态，不进仓库
+workspace/
+.ctf/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# 编辑器 / 系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

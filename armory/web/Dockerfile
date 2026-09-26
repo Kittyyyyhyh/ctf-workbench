@@ -15,7 +15,14 @@ RUN apt-get update \
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir \
         requests httpx aiohttp flask jinja2 beautifulsoup4 lxml pyyaml paramiko \
-        dirsearch sqlmap arjun wafw00f
+        pyjwt dirsearch sqlmap arjun wafw00f
+
+# jwt_tool (JWT audit toolkit)
+RUN set -eux; \
+    git clone --depth 1 https://github.com/ticarpi/jwt_tool /opt/jwt_tool; \
+    printf '#!/bin/sh\ncd /opt/jwt_tool && exec python3 jwt_tool.py "$@"\n' \
+        > /usr/local/bin/jwt_tool; \
+    chmod +x /usr/local/bin/jwt_tool
 
 # Go-based fuzzers/scanners from GitHub releases
 # (gobuster uses Go-OS-Arch naming: amd64 -> x86_64)

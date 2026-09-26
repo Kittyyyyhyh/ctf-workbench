@@ -313,6 +313,8 @@ hint: "用伪协议绕过 include 的 include 截断"   # writeup 专用：一�
 
 - [x] GHCR 镜像发布（.github/workflows/publish.yml + `ctf install-images`）
 - [x] osint 镜像、defense-audit 防御审计场景
+- [x] breakfix-pipeline 场景（对标长城杯/CISCN 半决赛 ISW 与 AWDP patch 提交制，
+      含 check+attack 双验证 harness）；内存马/协议重放/AI 加固/现代 auth 知识卡
 - [ ] pentest 多机场景扩展、defense 知识补全
 - [ ] hook 自动笔记、更多场景库
 

@@ -14,7 +14,7 @@ RUN apt-get update \
 
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir \
-        volatility3 python-magic yara-python oletools pefile
+        volatility3 python-magic yara-python oletools pefile scapy pyshark
 
 RUN gem install --no-document zsteg
 

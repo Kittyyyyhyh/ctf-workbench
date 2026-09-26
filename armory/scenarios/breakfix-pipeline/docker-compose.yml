@@ -1,0 +1,15 @@
+name: ctf-sc-breakfix-pipeline
+
+# Break-Fix 综合场景（对标长城杯/CISCN 半决赛 ISW 与综合防御题形态）：
+# 一台跑着业务的服务器 —— 溯源、找运行时注入的隐藏路由（内存马模拟）、
+# 修复漏洞且业务不中断（check + attack 双验证）、清持久化、恢复被篡改数据。
+# down && up 完全重置现场。
+
+services:
+  breakfix:
+    image: ctf-web
+    hostname: app-prod-03
+    volumes:
+      - ./harness:/opt/harness:ro
+      - ./scene:/opt/scene:ro
+    command: ["bash", "-c", "bash /opt/scene/plant.sh && exec tail -f /dev/null"]

@@ -12,6 +12,11 @@
 |---|---|---|---|
 | [techniques/web/ssti-basics.md](techniques/web/ssti-basics.md) | web | ssti, jinja2, flask | 服务端模板注入：检测信号与 jinja2 利用面速查 |
 | [techniques/ai/prompt-injection-basics.md](techniques/ai/prompt-injection-basics.md) | ai | prompt-injection, llm, agent | AI 注入题的四类攻击面分类法与固定排查动作 |
+| [techniques/ai/llm-tool-hardening.md](techniques/ai/llm-tool-hardening.md) | ai | llm, tool-abuse | LLM 工具滥用题三段式：根因→复现→加固 |
+| [techniques/web/modern-auth-bypass.md](techniques/web/modern-auth-bypass.md) | web | oauth, jwt, rsc | 现代 auth 链审计清单：OAuth/JWT/网关签名/RSC 逐项过 |
+| [techniques/forensics/protocol-replay.md](techniques/forensics/protocol-replay.md) | forensics | pcap, scapy | 私有协议流量取证与重放六步流程 |
+| [techniques/defense/memory-webshell.md](techniques/defense/memory-webshell.md) | defense | 内存马 | 内存马形态/检测（运行时 vs 静态 diff）/清除 |
+| [techniques/defense/breakfix-patterns.md](techniques/defense/breakfix-patterns.md) | defense | breakfix, awdp | 业务不中断约束下的最小修复模式与清持久化清单 |
 
 ## cheatsheets/（工具速查）
 

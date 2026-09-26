@@ -40,8 +40,8 @@
 ./ctf exec --detach ssti bash -c "cd /ctf/attachments && sh start.sh >/tmp/svc.log 2>&1"
 ./ctf exec ssti curl -s http://127.0.0.1:5000/
 
-# 5. 练手场景（应急取证 / AI 注入 / 渗透内网 / 防御审计）
-./ctf scenario list && ./ctf scenario up defense-audit
+# 5. 练手场景（应急取证 / AI 注入 / 渗透内网 / 防御审计 / Break-Fix 修复）
+./ctf scenario list && ./ctf scenario up breakfix-pipeline
 ```
 
 ## 目录结构

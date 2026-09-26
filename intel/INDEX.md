@@ -23,6 +23,8 @@
 | 文件 | 工具 | 一句话 |
 |---|---|---|
 | [cheatsheets/pwntools.md](cheatsheets/pwntools.md) | pwntools | 本地/远程进程、打包、偏移计算等高频片段 |
+| [cheatsheets/mathkit.md](cheatsheets/mathkit.md) | mathkit | RSA/格/离散对数一条命令（ctf-crypto 内置 /opt/mathkit） |
+| [cheatsheets/vision-workflow.md](cheatsheets/vision-workflow.md) | 多模态+镜像 | CC 看图 vs 容器解码的分工：PDF/PNG 转换、二维码修复、频谱图 |
 
 ## writeups/（题解库）
 

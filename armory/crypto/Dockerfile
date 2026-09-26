@@ -16,13 +16,20 @@ RUN apt-get update \
 
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir \
-        pycryptodome gmpy2 sympy factordb-python z3-solver
+        pycryptodome gmpy2 sympy factordb-python z3-solver \
+        gmalg gmssl
 
 # yafu (integer factorization) as a single static binary
 RUN set -eux; \
     curl -fsSL "${GH_PROXY}https://github.com/bbuhrow/yafu/releases/download/v3.1.9/yafu-linux-avx2" \
         -o /usr/local/bin/yafu; \
     chmod +x /usr/local/bin/yafu
+
+# mathkit: one-shot CTF math attacks (factor/cuberoot/wiener/fermat/commonmod/
+# hastad/dlog/lll), see armory/crypto/mathkit/
+COPY mathkit/ /opt/mathkit/
+ENV PATH="/opt/mathkit:${PATH}"
+RUN ln -sf /opt/mathkit/mathkit.py /usr/local/bin/mathkit
 
 # RsaCtfTool (RSA multi-attack toolkit); upstream is a pyproject package now,
 # so install it for a stable `RsaCtfTool` entrypoint

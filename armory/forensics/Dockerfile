@@ -10,11 +10,14 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         libimage-exiftool-perl binwalk foremost testdisk sleuthkit \
         steghide outguess tshark yara qpdf poppler-utils pv unar ruby-full \
+        zbar-tools imagemagick sox libsox-fmt-all sqlcipher \
+        tesseract-ocr tesseract-ocr-eng tesseract-ocr-chi-sim \
     && rm -rf /var/lib/apt/lists/*
 
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir \
-        volatility3 python-magic yara-python oletools pefile scapy pyshark
+        volatility3 python-magic yara-python oletools pefile scapy pyshark \
+        pillow qrcode pytesseract scapy pyshark
 
 RUN gem install --no-document zsteg
 

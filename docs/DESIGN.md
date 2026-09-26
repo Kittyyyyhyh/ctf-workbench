@@ -111,15 +111,16 @@ ctf init <题目名> --type web|pwn|crypto|re|forensics|ir|ai|osint|misc
       # 起对应容器，workspace 双向挂载到 /ctf，登记题目元信息到 .ctf.yaml
 ctf exec <题目名> <命令...>     # 容器内执行，stdout/stderr 回传给 CC
 ctf shell <题目名>              # 交互 shell（人类用；CC 走 exec）
-ctf debug <题目名>              # pwn 专用：容器内起 gdbserver，宿主 gdb remote
-ctf serve <题目名> [port]       # 把 attachments 用 http 起来，模拟远程下载/回连
-ctf target <题目名> <host:port> # 登记远程靶机地址，写入 .ctf.yaml
+ctf exec <题目名> <命令...>     # 容器内执行，stdout/stderr 回传给 CC（已实现，含 --detach 与 MSYS 路径修复）
+ctf shell <题目名>              # 交互 shell（人类用；CC 走 exec）
+ctf target <题目名> <host:port> # 远程靶机地址登记
 ctf stop|rm <题目名>            # 收尾；容器即弃即扔
 ctf ps                          # 当前题目/容器状态一览
-ctf tool <方向> <工具名> [args] # 一次性调用：起临时容器跑单个工具后销毁
-ctf doctor                      # 自检：docker 可用性、镜像齐缺、版本、网络
-ctf update [方向]               # 重建指定镜像（base 缓存加速）
+ctf doctor                      # 自检：docker 可用性、镜像齐缺、版本、网络、磁盘
+ctf update [方向]               # 重建指定镜像（base 缓存加速；带磁盘空间门禁）
+ctf install-images [方向...]    # 从 GHCR 拉预构建镜像并重打标签
 ctf scenario list|up|down|ps|logs|exec   # 练手场景编排（armory/scenarios/*）
+ctf debug / serve / tool        # 设计保留未实现：debug 可用 `exec --detach <名> gdbserver ...` 替代
 ```
 
 设计要点：

@@ -30,8 +30,9 @@ jobs:
       - id: t
         run: |
           input="${{ github.event.inputs.types }}"
-          echo "types=[${input:-base,web,pwn,crypto,reverse,forensics,ir,ai,osint}]" \
-            | tr ',' ',' >> "$GITHUB_OUTPUT"
+          [ -z "$input" ] && input="base,web,pwn,crypto,reverse,forensics,ir,ai,osint"
+          json=$(echo "$input" | tr -d ' ' | jq -R 'split(",") | map(select(length > 0))')
+          echo "types=$json" >> "$GITHUB_OUTPUT"
 
   base:
     needs: prepare

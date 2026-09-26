@@ -201,7 +201,8 @@ def cmd_init(args) -> int:
 
     if not image_exists(image):
         hint = args.type if args.type in BUILDABLE_TYPES else "base"
-        die(f"image '{image}' not built yet — run: python -m ctfcli update {hint}")
+        die(f"image '{image}' not built yet — run: python -m ctfcli update {hint}, "
+            f"or pull the prebuilt one: python -m ctfcli install-images {args.type}")
 
     (ws / "attachments").mkdir(parents=True)
     (ws / "exploit").mkdir()
@@ -407,6 +408,15 @@ def cmd_doctor(args) -> int:
     return 0
 
 
+# rough per-type image size budget (GB), used by the update-time disk guard
+IMAGE_GB = {"base": 1.5, "web": 2.5, "pwn": 3.0, "crypto": 2.5, "reverse": 4.0,
+            "forensics": 2.5, "ir": 1.5, "ai": 1.5, "osint": 1.2}
+
+
+def _disk_free_gb(root: Path) -> float:
+    return shutil.disk_usage(root.anchor).free / 2**30
+
+
 def cmd_update(args) -> int:
     root = find_root()
     compose = root / "armory" / "docker-compose.yml"
@@ -415,9 +425,21 @@ def cmd_update(args) -> int:
     targets = list(args.types)
     for t in targets:
         if t not in BUILDABLE_TYPES:
-            die(f"cannot build '{t}' (MVP images: {', '.join(BUILDABLE_TYPES)})")
-    if "base" not in targets and any(t != "base" for t in targets):
+            die(f"cannot build '{t}' (available: {', '.join(BUILDABLE_TYPES)})")
+    base_needed = "base" not in targets and any(t != "base" for t in targets)
+    if base_needed:
         targets = ["base", *targets]
+    # disk guard: a full build at 0 bytes free wedged the docker engine once
+    need_gb = sum(IMAGE_GB.get(t, 2.0) for t in targets)
+    free_gb = _disk_free_gb(root)
+    if free_gb < need_gb + 3:
+        die(f"disk guard: {free_gb:.1f}GB free on {root.anchor}, but building "
+            f"{'+'.join(targets)} needs ~{need_gb:.0f}GB + headroom. Free up space first "
+            f"(docker builder prune -f; compact the WSL vhdx if it ballooned; "
+            f"crypto sage layer: leave INSTALL_SAGE unset for the slim build).")
+    if free_gb < need_gb + 10:
+        warn(f"disk: {free_gb:.1f}GB free, building ~{need_gb:.0f}GB of images — "
+             f"consider cleaning up if this is your system drive")
     for t in targets:
         info(f"building image ctf-{t} ...")
         cmd = ["docker", "compose", "-f", str(compose), "build", t]
@@ -516,8 +538,10 @@ def cmd_scenario(args) -> int:
             extra.append(args.service)
         return subprocess.run(_scenario_cmd(root, "logs", name, extra)).returncode
     if args.action == "exec":
+        # same MSYS path repair as `ctf exec` — Git Bash mangles /opt/... args too
         return subprocess.run(
-            _scenario_cmd(root, "exec", name, [args.service, *args.cmd])).returncode
+            _scenario_cmd(root, "exec", name,
+                          [args.service, *[_unmangle(w) for w in args.cmd]])).returncode
     die(f"unknown scenario action: {args.action}")
     return 1
 

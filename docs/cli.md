@@ -87,6 +87,34 @@ export GH_PROXY=https://ghproxy.net/          # 注意保留结尾斜杠
 ./ctf rm chal                                          # 5. 收尾（workspace 留档）
 ```
 
+## ctf scenario —— 练手场景编排
+
+多容器场景（应急取证 / AI 注入 / 渗透内网 / 防御审计 / Break-Fix）不走 `ctf init`：
+
+```bash
+./ctf scenario list                                  # 列出 armory/scenarios/ 下的场景
+./ctf scenario up <名> [--build]                     # 启动（build 先构建场景内镜像）
+./ctf scenario ps <名>                               # 容器状态
+./ctf scenario logs <名> [服务] [-f]                 # 日志
+./ctf scenario exec <名> <服务> <命令...>            # 进容器执行（同 exec 语义）
+./ctf scenario down <名>                             # 停止并清空卷
+```
+
+题面在 `armory/scenarios/<名>/README.md`；场景容器不挂 workspace，文件进出用
+`scenario exec ... cat` 或 docker cp。
+
+## ctf install-images —— 拉取预构建镜像
+
+CI 已把镜像发布到 GHCR（`.github/workflows/publish.yml`），可免本地构建直接拉：
+
+```bash
+./ctf install-images                 # 全部方向（~14GB）
+./ctf install-images web pwn         # 指定方向
+./ctf install-images --owner <github用户名>   # owner 缺省从 git origin / CTF_IMAGES_OWNER 解析
+```
+
+拉取后本地标签为 `ctf-<方向>:latest`，与本地构建产物等价。
+
 ## 疑难
 
 | 症状 | 处理 |

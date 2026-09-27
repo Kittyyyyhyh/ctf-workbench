@@ -316,6 +316,9 @@ hint: "用伪协议绕过 include 的 include 截断"   # writeup 专用：一�
 - [x] osint 镜像、defense-audit 防御审计场景
 - [x] breakfix-pipeline 场景（对标长城杯/CISCN 半决赛 ISW 与 AWDP patch 提交制，
       含 check+attack 双验证 harness）；内存马/协议重放/AI 加固/现代 auth 知识卡
+- [x] mathkit/miskit 参数化攻击脚本集（crypto/forensics 内置）；SM 国密库；
+      视觉输入工作链（多模态 + zbar/imagemagick/sox/sqlcipher/tesseract）
+- [x] 外部馆藏机制（intel/external，gitignore，注册外部公开语料如 Des-CTF-Knowledge）
 - [ ] pentest 多机场景扩展、defense 知识补全
 - [ ] hook 自动笔记、更多场景库
 

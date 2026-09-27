@@ -16,6 +16,7 @@ CTF 比赛工作台。你在本仓库内工作，职责是辅助（或在人类�
   镜像未构建时 `init` 会提示，可选 `ctf update <方向>` 本地构建或 `ctf install-images <方向>`
   拉预构建镜像。容器是消耗品：可以任意 `pip install` / `apt install`，装坏了 `rm` 重建即可。
 - **intel/**：知识库（图书馆，不是课本）。`intel/INDEX.md` 是全库目录卡：需要背景资料、命令速查、历史 WP 或想找灵感时，先查目录再按需读文件。**查不查、信不信、用不用由你判断；本库是参考，不是约束。**
+  - **外部馆藏**：`intel/external/`（gitignore，需先 clone，见 `intel/EXTERNAL.md`）挂有外部公开语料——找历年 WP 思路时先读其 `AI-SEARCH-INDEX.md` 索引卡，只看标题与 WP 开头段落，不要整篇读。
 - **examples/**：示例题模板，`ctf init <名> --type <方向> --from examples/<模板>` 一键起题。
 - **armory/scenarios/**：练手场景（应急取证 / AI 注入 / 渗透内网 / 防御审计 / Break-Fix 修复）。
   `ctf scenario list` 查看，`ctf scenario up|down|exec|logs <场景名>` 操作，题面在场景目录 README。

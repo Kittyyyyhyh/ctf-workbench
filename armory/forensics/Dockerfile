@@ -10,7 +10,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         libimage-exiftool-perl binwalk foremost testdisk sleuthkit \
         steghide outguess tshark yara qpdf poppler-utils pv unar ruby-full \
-        zbar-tools imagemagick sox libsox-fmt-all sqlcipher \
+        zbar-tools imagemagick sox libsox-fmt-all sqlcipher fcrackzip \
         tesseract-ocr tesseract-ocr-eng tesseract-ocr-chi-sim \
     && rm -rf /var/lib/apt/lists/*
 
@@ -26,6 +26,12 @@ RUN set -eux; \
     curl -fsSL "${GH_PROXY}https://github.com/omerbenamram/evtx/releases/download/v0.12.3/evtx_dump-v0.12.3-x86_64-unknown-linux-musl" \
         -o /usr/local/bin/evtx_dump; \
     chmod +x /usr/local/bin/evtx_dump
+
+# miskit: one-shot misc attacks (CRC brute/pngfix/USB-HID/TTL/nested base/
+# steghide brute), see armory/forensics/miskit/ (idea provenance: Des-CTF-Knowledge, MIT)
+COPY miskit/ /opt/miskit/
+ENV PATH="/opt/miskit:${PATH}"
+RUN ln -sf /opt/miskit/miskit.py /usr/local/bin/miskit
 
 WORKDIR /ctf
 CMD ["/bin/bash"]

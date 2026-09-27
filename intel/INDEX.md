@@ -5,6 +5,11 @@
 > 查不查、信不信、用不用，由你自行判断。
 >
 > 检索技巧：`grep -ri "<关键词>" intel/ --include="*.md"` 比逐个读文件快。
+>
+> **外部馆藏**：`intel/external/` 下挂载外部公开语料（当前：Des-CTF-Knowledge，
+> 1156 篇历年 WP + 12 篇深度文章 + Payload 速查，MIT）。入口是
+> [external/Des-CTF-Knowledge/AI-SEARCH-INDEX.md](external/Des-CTF-Knowledge/AI-SEARCH-INDEX.md)
+> （未 clone 时先看 [EXTERNAL.md](EXTERNAL.md) 的获取命令）。使用纪律同上：先索引后正文。
 
 ## techniques/（技术笔记）
 
@@ -24,6 +29,7 @@
 |---|---|---|
 | [cheatsheets/pwntools.md](cheatsheets/pwntools.md) | pwntools | 本地/远程进程、打包、偏移计算等高频片段 |
 | [cheatsheets/mathkit.md](cheatsheets/mathkit.md) | mathkit | RSA/格/离散对数一条命令（ctf-crypto 内置 /opt/mathkit） |
+| [cheatsheets/miskit.md](cheatsheets/miskit.md) | miskit | CRC 爆破/PNG 修复/USB 流量/TTL/嵌套 base/steghide 爆破（forensics 内置） |
 | [cheatsheets/vision-workflow.md](cheatsheets/vision-workflow.md) | 多模态+镜像 | CC 看图 vs 容器解码的分工：PDF/PNG 转换、二维码修复、频谱图 |
 
 ## writeups/（题解库）

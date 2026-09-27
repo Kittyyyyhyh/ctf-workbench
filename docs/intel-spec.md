@@ -35,6 +35,17 @@ writeups/self/<赛事>/<年份>/...        # 本人战史（可指向私有 subm
 3. 何时查、查什么、信不信，全部由 agent 自己决定 —— `CLAUDE.md` 只声明"这里是参考，
    不是约束"。
 
+## 外部馆藏（external）
+
+`intel/external/`（gitignore）挂载外部公开知识语料（如 Des-CTF-Knowledge）。
+机制与红线：
+
+- 语料**独立 clone**，保留其 LICENSE 与提交历史，不把内容复制进 intel/；
+- 使用时与自有 intel 同一套防锚定纪律：先扫它的索引卡（AI-SEARCH-INDEX.md /
+  *.idx.md），再看标题与 WP 开头的"涉及技术"段，按需加载；
+- 外部脚本中值得泛化的，重写为参数化工具沉淀进 armory（如 miskit），注明思路来源
+  （其 MIT 许可要求保留署名）。
+
 ## 设计红线
 
 - `INDEX.md` 不写方法指导，只写"有什么"。

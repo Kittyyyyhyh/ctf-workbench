@@ -39,7 +39,8 @@ def parse_front_matter(text: str):
 def main() -> int:
     errors = []
     files = [p for p in INTEL.rglob("*.md")
-             if p.name not in ("INDEX.md", "README.md")]
+             if p.name not in ("INDEX.md", "README.md", "EXTERNAL.md")
+             and "external" not in p.parts]
     for p in files:
         rel = p.relative_to(ROOT).as_posix()
         try:

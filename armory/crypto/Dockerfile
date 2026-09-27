@@ -28,8 +28,8 @@ RUN set -eux; \
 # mathkit: one-shot CTF math attacks (factor/cuberoot/wiener/fermat/commonmod/
 # hastad/dlog/lll), see armory/crypto/mathkit/
 COPY mathkit/ /opt/mathkit/
-ENV PATH="/opt/mathkit:${PATH}"
-RUN ln -sf /opt/mathkit/mathkit.py /usr/local/bin/mathkit
+RUN chmod +x /opt/mathkit/mathkit.py \
+    && ln -sf /opt/mathkit/mathkit.py /usr/local/bin/mathkit
 
 # RsaCtfTool (RSA multi-attack toolkit); upstream is a pyproject package now,
 # so install it for a stable `RsaCtfTool` entrypoint

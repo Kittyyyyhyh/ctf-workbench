@@ -30,8 +30,8 @@ RUN set -eux; \
 # miskit: one-shot misc attacks (CRC brute/pngfix/USB-HID/TTL/nested base/
 # steghide brute), see armory/forensics/miskit/ (idea provenance: Des-CTF-Knowledge, MIT)
 COPY miskit/ /opt/miskit/
-ENV PATH="/opt/miskit:${PATH}"
-RUN ln -sf /opt/miskit/miskit.py /usr/local/bin/miskit
+RUN chmod +x /opt/miskit/miskit.py \
+    && ln -sf /opt/miskit/miskit.py /usr/local/bin/miskit
 
 WORKDIR /ctf
 CMD ["/bin/bash"]

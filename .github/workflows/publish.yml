@@ -69,11 +69,11 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # domain images build FROM ctf-base: retag the freshly pushed GHCR base
-      - name: Retag base
-        run: |
-          docker pull "${{ env.REGISTRY }}/${{ needs.prepare.outputs.owner }}/ctf-base:latest"
-          docker tag "${{ env.REGISTRY }}/${{ needs.prepare.outputs.owner }}/ctf-base:latest" ctf-base:latest
+      # domain images build FROM ctf-base: build it locally (pulling the just
+      # created GHCR package races its repo-linking and fails with
+      # insufficient_scope)
+      - name: Build base locally
+        run: docker build -t ctf-base armory/base
       - uses: docker/build-push-action@v6
         with:
           context: armory/${{ matrix.type }}

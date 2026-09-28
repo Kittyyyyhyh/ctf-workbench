@@ -19,8 +19,10 @@ from pathlib import Path
 
 VERSION = "0.1.0"
 
-VALID_TYPES = ["web", "pwn", "crypto", "reverse", "forensics", "ir", "ai", "osint", "misc"]
-BUILDABLE_TYPES = ["base", "web", "pwn", "crypto", "reverse", "forensics", "ir", "ai", "osint"]
+VALID_TYPES = ["web", "pwn", "crypto", "reverse", "forensics", "ir", "ai", "osint",
+               "pentest", "misc"]
+BUILDABLE_TYPES = ["base", "web", "pwn", "crypto", "reverse", "forensics", "ir", "ai",
+                   "osint", "pentest"]
 # doctor hard-requires the day-to-day set; the rest are listed as optional
 REQUIRED_IMAGES = {"base", "web", "pwn"}
 IMAGE_PREFIX = "ctf-"
@@ -410,7 +412,25 @@ def cmd_doctor(args) -> int:
 
 # rough per-type image size budget (GB), used by the update-time disk guard
 IMAGE_GB = {"base": 1.5, "web": 2.5, "pwn": 3.0, "crypto": 2.5, "reverse": 4.0,
-            "forensics": 2.5, "ir": 1.5, "ai": 1.5, "osint": 1.2}
+            "forensics": 2.5, "ir": 1.5, "ai": 1.5, "osint": 1.2, "pentest": 2.5}
+# image build dependency DAG: a type must be built after the images it FROMs
+IMAGE_DEPS = {"base": [], "web": ["base"], "pwn": ["base"], "crypto": ["base"],
+              "reverse": ["base"], "forensics": ["base"], "ir": ["base"],
+              "ai": ["base"], "osint": ["base"], "pentest": ["base", "web"]}
+
+
+def _expand_deps(targets: list) -> list:
+    ordered = []
+
+    def add(t):
+        if t not in ordered:
+            for d in IMAGE_DEPS.get(t, []):
+                add(d)
+            ordered.append(t)
+
+    for t in targets:
+        add(t)
+    return ordered
 
 
 def _disk_free_gb(root: Path) -> float:
@@ -422,13 +442,10 @@ def cmd_update(args) -> int:
     compose = root / "armory" / "docker-compose.yml"
     if not compose.is_file():
         die(f"compose file not found: {compose}")
-    targets = list(args.types)
+    targets = _expand_deps(list(args.types))
     for t in targets:
         if t not in BUILDABLE_TYPES:
             die(f"cannot build '{t}' (available: {', '.join(BUILDABLE_TYPES)})")
-    base_needed = "base" not in targets and any(t != "base" for t in targets)
-    if base_needed:
-        targets = ["base", *targets]
     # disk guard: a full build at 0 bytes free wedged the docker engine once
     need_gb = sum(IMAGE_GB.get(t, 2.0) for t in targets)
     free_gb = _disk_free_gb(root)

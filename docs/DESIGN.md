@@ -96,6 +96,8 @@ armory/base  (~800MB)
        ai        (~1.2GB)  LLM 攻击工具链(openai/anthropic sdk)、tesseract OCR、
                            prompt 注入 payload 集；ollama 运行时不进镜像（见 §9）
        osint     (~1GB)    sherlock maigret dork 工具、exif/图片定位辅助、爬虫工具链
+       pentest   (~2.5GB)  继承 web 全套；impacket 全家桶 netexec hydra responder
+                           enum4linux-ng evil-winrm chisel kerbrute mitm6 bloodhound
 ```
 
 体积预算：全家桶约 20GB。构建采用 `docker build` 按方向独立 tag，**比赛期间只构建/拉取需要的方向**。base 层缓存共享，新增一个方向镜像的边际成本约 1-3GB + 10 分钟。
@@ -106,7 +108,7 @@ Python 实现，**仅依赖标准库**（argparse）——满足"新 clone 零�
 `python -m ctfcli`（Git Bash 可用根目录 `./ctf`，cmd 用 `ctf.cmd`）。命令集：
 
 ```
-ctf init <题目名> --type web|pwn|crypto|re|forensics|ir|ai|osint|misc
+ctf init <题目名> --type web|pwn|crypto|re|forensics|ir|ai|osint|pentest|misc
       # workspace/<题目>/ 建目录(attachments/ exploit/ notes.md)
       # 起对应容器，workspace 双向挂载到 /ctf，登记题目元信息到 .ctf.yaml
 ctf exec <题目名> <命令...>     # 容器内执行，stdout/stderr 回传给 CC

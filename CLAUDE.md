@@ -12,7 +12,8 @@ CTF 比赛工作台。你在本仓库内工作，职责是辅助（或在人类�
   - `ctf ps` / `ctf stop <题目名>` / `ctf rm <题目名>` 查看与收尾（workspace 保留）
   - `ctf doctor` 环境自检；`ctf update <方向>` 构建镜像
   - 完整用法见 `docs/cli.md`；环境报错先跑 `doctor`
-- **armory/**：按方向的沙箱镜像定义。已覆盖 web/pwn/crypto/reverse/forensics/ir/ai/osint；
+- **armory/**：按方向的沙箱镜像定义。已覆盖 web/pwn/crypto/reverse/forensics/ir/ai/osint/pentest
+  （pentest 是完整攻击机：web 链 + AD/SMB + 密码攻击 + 隧道）；
   镜像未构建时 `init` 会提示，可选 `ctf update <方向>` 本地构建或 `ctf install-images <方向>`
   拉预构建镜像。容器是消耗品：可以任意 `pip install` / `apt install`，装坏了 `rm` 重建即可。
 - **intel/**：知识库（图书馆，不是课本）。`intel/INDEX.md` 是全库目录卡：需要背景资料、命令速查、历史 WP 或想找灵感时，先查目录再按需读文件。**查不查、信不信、用不用由你判断；本库是参考，不是约束。**

@@ -93,9 +93,15 @@ class TestMeta(unittest.TestCase):
         self.assertIn("web", t)
 
     def test_type_lists(self):
-        self.assertEqual(len(cli.VALID_TYPES), 9)
+        self.assertEqual(len(cli.VALID_TYPES), 10)
         self.assertIn("osint", cli.BUILDABLE_TYPES)
+        self.assertIn("pentest", cli.BUILDABLE_TYPES)
         self.assertEqual(cli.REQUIRED_IMAGES, {"base", "web", "pwn"})
+
+    def test_expand_deps(self):
+        self.assertEqual(cli._expand_deps(["pentest"]), ["base", "web", "pentest"])
+        self.assertEqual(cli._expand_deps(["pwn", "base"]), ["base", "pwn"])
+        self.assertEqual(cli._expand_deps(["crypto", "web"]), ["base", "crypto", "web"])
 
 
 if __name__ == "__main__":

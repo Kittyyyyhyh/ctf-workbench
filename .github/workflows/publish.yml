@@ -64,6 +64,9 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
       - name: Build base locally
         run: docker build -t ctf-base armory/base
+      - name: Build ctf-web locally (dependency of pentest)
+        if: matrix.type == 'pentest'
+        run: docker build -t ctf-web armory/web
       - name: Build and push ctf-${{ matrix.type }}
         run: |
           docker build -t ${{ env.REGISTRY }}/${{ needs.prepare.outputs.owner }}/ctf-${{ matrix.type }}:latest armory/${{ matrix.type }}

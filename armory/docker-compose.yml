@@ -83,3 +83,10 @@ services:
       <<: *build-args
       context: ./osint
     profiles: ["osint"]
+
+  pentest:
+    image: ctf-pentest
+    build:
+      <<: *build-args
+      context: ./pentest
+    profiles: ["pentest"]

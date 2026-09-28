@@ -15,7 +15,7 @@
 
 ### ctf init `<名>` `--type <方向>` [`--from <模板目录>`] [`--image <img>`] [`--publish HOST:CONTAINER`]
 
-建 workspace + 启动沙箱容器。方向：`web pwn crypto reverse forensics ir ai osint misc`。
+建 workspace + 启动沙箱容器。方向：`web pwn crypto reverse forensics ir ai osint pentest misc`。
 
 ```bash
 ./ctf init ssti --type web --from examples/web-ssti

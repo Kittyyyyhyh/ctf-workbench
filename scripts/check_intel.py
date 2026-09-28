@@ -17,7 +17,8 @@ ROOT = Path(__file__).resolve().parents[1]
 INTEL = ROOT / "intel"
 
 VALID_TYPE = {"technique", "writeup", "cheatsheet", "playbook"}
-VALID_DOMAIN = {"web", "pwn", "crypto", "re", "forensics", "ir", "ai", "osint", "defense", "misc"}
+VALID_DOMAIN = {"web", "pwn", "crypto", "re", "forensics", "ir", "ai", "osint",
+                "defense", "pentest", "misc"}
 
 
 def parse_front_matter(text: str):

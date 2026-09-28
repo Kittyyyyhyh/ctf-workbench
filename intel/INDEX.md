@@ -22,6 +22,7 @@
 | [techniques/forensics/protocol-replay.md](techniques/forensics/protocol-replay.md) | forensics | pcap, scapy | 私有协议流量取证与重放六步流程 |
 | [techniques/defense/memory-webshell.md](techniques/defense/memory-webshell.md) | defense | 内存马 | 内存马形态/检测（运行时 vs 静态 diff）/清除 |
 | [techniques/defense/breakfix-patterns.md](techniques/defense/breakfix-patterns.md) | defense | breakfix, awdp | 业务不中断约束下的最小修复模式与清持久化清单 |
+| [techniques/pentest/pivot-tunneling.md](techniques/pentest/pivot-tunneling.md) | pentest | pivot, chisel | 内网横移四模式选型：直路由/ssh-D/chisel 反向 socks/socat |
 
 ## cheatsheets/（工具速查）
 
@@ -30,6 +31,7 @@
 | [cheatsheets/pwntools.md](cheatsheets/pwntools.md) | pwntools | 本地/远程进程、打包、偏移计算等高频片段 |
 | [cheatsheets/mathkit.md](cheatsheets/mathkit.md) | mathkit | RSA/格/离散对数一条命令（ctf-crypto 内置 /opt/mathkit） |
 | [cheatsheets/miskit.md](cheatsheets/miskit.md) | miskit | CRC 爆破/PNG 修复/USB 流量/TTL/嵌套 base/steghide 爆破（forensics 内置） |
+| [cheatsheets/pentest-kit.md](cheatsheets/pentest-kit.md) | pentest-kit | netexec/impacket/hydra/kerbrute 一行命令（pentest 攻击机内置） |
 | [cheatsheets/vision-workflow.md](cheatsheets/vision-workflow.md) | 多模态+镜像 | CC 看图 vs 容器解码的分工：PDF/PNG 转换、二维码修复、频谱图 |
 
 ## writeups/（题解库）
